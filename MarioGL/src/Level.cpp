@@ -3,6 +3,9 @@
 #include "Level.h"
 #include "Game.h"
 #include "Util.h"
+#include "Environment.h"
+#include "TileMap.h"
+#include "Renderer2D.h"
 
 Level::Level(Game& game): game(game) {
 	std::string level;
@@ -14,28 +17,38 @@ Level::Level(Game& game): game(game) {
 		return;
 	}
 
-	for (auto& subData : Util::Split(level, '\n')) {
-		std::cout << Util::Split(subData, ',').size() << std::endl;
-		levelData.push_back(Util::Split(subData, ','));
+	auto rows = Util::Split(level, '\n');
+	for (size_t i = 0; i < rows.size(); ++i) {
+		auto cells = Util::Split(rows[i], ',');
+
+		for (size_t j = 0; j < cells.size(); ++j) {
+			float x = j * Environment::OBJECT_SIZE;
+			float y = (rows.size() - i - 1) * Environment::OBJECT_SIZE;
+			auto uv = TileMap::GetUvCoordinates(cells[j]);
+
+			if (uv.has_value()) {
+				gameObjects.push_back(
+					std::make_unique<Environment>(
+						game,
+						uv.value(),
+						glm::vec2(x, y)
+					)
+				);
+			}
+		}
 	}
-
-	/*for (size_t i = 0; i < levelData.size(); ++i) {
-		if (i != levelData.size() - 1) {
-			continue;
-		}
-
-		for (size_t j = 0; j < levelData[i].size(); j++) {
-			std::cout << levelData[i][j] << std::endl;
-		}
-	}*/
 
 	game.registerGameObject(*this);
 }
 
 void Level::onUpdate(float ts) {
-
+	for (auto& gameOject : gameObjects) {
+		gameOject->onUpdate(ts);
+	}
 }
 
 void Level::onRender() {
-
+	for (auto& gameOject : gameObjects) {
+		gameOject->onRender();
+	}
 }

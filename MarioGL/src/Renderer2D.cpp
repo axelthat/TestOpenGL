@@ -1,6 +1,7 @@
 #include <glad/glad.h>
 #include <array>
 
+#include "imgui/imgui.h"
 #include "Renderer2D.h"
 #include "Shader.h"
 
@@ -61,6 +62,16 @@ void Renderer2D::BeginScene(Camera& camera) {
 	r_Data.spriteShader->SetMatrix4("u_Projection", camera.GetProjection());
 }
 
+void Renderer2D::BeginBatch() {
+	batching = true;
+}
+
+void Renderer2D::EndBatch() {
+	if (!batching) return;
+
+	batching = false;
+}
+
 void Renderer2D::DrawQuad(glm::vec2 position, float rotation, glm::vec2 scale, glm::vec4 color) {
 	r_Data.flatShader->Bind();
 
@@ -75,6 +86,8 @@ void Renderer2D::DrawQuad(glm::vec2 position, float rotation, glm::vec2 scale, g
 	glBindBuffer(GL_ARRAY_BUFFER, r_Data.vbo);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, r_Data.ibo);
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+
+	drawCall += 1;
 }
 
 void Renderer2D::DrawTexture(glm::vec2 position, float rotation, glm::vec2 scale, Texture& texture, float u1, float v1, float u2, float v2) {
@@ -100,4 +113,7 @@ void Renderer2D::DrawTexture(glm::vec2 position, float rotation, glm::vec2 scale
 	glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, r_Data.ibo);
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+
+	drawCall += 1;
 }
+

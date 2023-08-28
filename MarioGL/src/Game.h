@@ -6,17 +6,18 @@
 #include "Character.h"
 #include "Level.h"
 #include "Camera.h"
-#include "Ground.h"
 
 class Game {
 private:
 	unsigned int height;
 	unsigned int width;
+	unsigned int frames;
+	float deltaTimePerSecond = 0.0f;
+	unsigned int fps = 0;
 
 	std::vector<IObject*> gameObjects;
 	Character* character = nullptr;
 	Level* level = nullptr;
-	Ground* ground = nullptr;
 	Camera camera;
 
 public:

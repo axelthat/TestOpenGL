@@ -2,6 +2,9 @@
 
 #include <vector>
 #include <string>
+#include <memory>
+#include <optional>
+
 #include "IObject.h"
 
 class Game;
@@ -9,7 +12,7 @@ class Game;
 class Level: public IObject {
 private:
 	Game& game;
-	std::vector<std::vector<std::string>> levelData;
+	std::vector<std::unique_ptr<IObject>> gameObjects;
 
 public:
 	Level(Game& game);

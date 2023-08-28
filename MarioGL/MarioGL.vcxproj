@@ -145,14 +145,15 @@
   <ItemGroup>
     <ClCompile Include="src\Camera.cpp" />
     <ClCompile Include="src\Character.cpp" />
+    <ClCompile Include="src\Environment.cpp" />
     <ClCompile Include="src\Game.cpp" />
     <ClCompile Include="src\glad.c" />
-    <ClCompile Include="src\Ground.cpp" />
     <ClCompile Include="src\Level.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\Renderer2D.cpp" />
     <ClCompile Include="src\Shader.cpp" />
     <ClCompile Include="src\Texture.cpp" />
+    <ClCompile Include="src\TileMap.cpp" />
     <ClCompile Include="src\Util.cpp" />
     <ClCompile Include="src\vendor\imgui\imgui.cpp" />
     <ClCompile Include="src\vendor\imgui\imgui_demo.cpp" />
@@ -167,13 +168,14 @@
     <ClInclude Include="src\Camera.h" />
     <ClInclude Include="src\Character.h" />
     <ClInclude Include="src\Constants.h" />
+    <ClInclude Include="src\Environment.h" />
     <ClInclude Include="src\Game.h" />
-    <ClInclude Include="src\Ground.h" />
     <ClInclude Include="src\IObject.h" />
     <ClInclude Include="src\Level.h" />
     <ClInclude Include="src\Renderer2D.h" />
     <ClInclude Include="src\Shader.h" />
     <ClInclude Include="src\Texture.h" />
+    <ClInclude Include="src\TileMap.h" />
     <ClInclude Include="src\Util.h" />
     <ClInclude Include="src\vendor\imgui\imconfig.h" />
     <ClInclude Include="src\vendor\imgui\imgui.h" />

@@ -65,7 +65,7 @@ int main(void)
         delta = currentTime - lastTime;
         lastTime = currentTime;
 
-        glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+        glClearColor(0.3608f, 0.5804f, 0.9882f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
 
         ImGui_ImplOpenGL3_NewFrame();

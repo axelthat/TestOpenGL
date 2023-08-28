@@ -1,3 +1,5 @@
+#include "imgui/imgui.h"
+
 #include "Game.h"
 #include "Shader.h"
 #include "Renderer2D.h"
@@ -14,11 +16,9 @@ Game::~Game() {
 
 	delete character;
 	delete level;
-	delete ground;
 
 	character = nullptr;
 	level = nullptr;
-	ground = nullptr;
 }
 
 void Game::onInit() {
@@ -29,13 +29,32 @@ void Game::onInit() {
 
 	character = new Character(*this);
 	level = new Level(*this);
-	ground = new Ground(*this);
 }
 
 void Game::onUpdate(float ts) {
+	deltaTimePerSecond += ts;
+	frames += 1;
+
+	if (deltaTimePerSecond >= 1.0f) {
+		fps = frames;
+		frames = 0;
+		deltaTimePerSecond = 0.0f;
+	}
+
+	Renderer2D::ResetDrawCall();
+
 	for (size_t i = 0; i < gameObjects.size(); ++i) {
 		gameObjects[i]->onUpdate(ts);
 	}
+
+	auto translation = glm::vec2(camera.GetPosition().x, camera.GetPosition().y);
+
+	ImGui::Begin("Camera");
+	ImGui::SliderFloat("Translate (X)", &translation.x, 8660.0f, -8660.0f);
+	ImGui::SliderFloat("Translate (Y)", &translation.y, 0.0f, static_cast<float>(height));
+	ImGui::End();
+
+	camera.SetPosition(translation);
 }
 
 void Game::onRender() {
@@ -44,6 +63,11 @@ void Game::onRender() {
 	for (size_t i = 0; i < gameObjects.size(); ++i) {
 		gameObjects[i]->onRender();
 	}
+
+	ImGui::Begin("Statistics");
+	ImGui::Text(("Draw Calls: " + std::to_string(Renderer2D::GetDrawCall())).c_str());
+	ImGui::Text(("FPS: " + std::to_string(fps)).c_str());
+	ImGui::End();
 }
 
 void Game::LoadShaders() const {
@@ -52,7 +76,7 @@ void Game::LoadShaders() const {
 }
 
 void Game::LoadTextures() const {
-	Texture::LoadTexture("Tile", "Textures/tile.png", true);
+	Texture::LoadTexture("Tileset", "Textures/tileset.png", true);
 }
 
 void Game::registerGameObject(IObject& gameObject) {
