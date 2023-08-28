@@ -50,7 +50,7 @@ void Game::onUpdate(float ts) {
 	auto translation = glm::vec2(camera.GetPosition().x, camera.GetPosition().y);
 
 	ImGui::Begin("Camera");
-	ImGui::SliderFloat("Translate (X)", &translation.x, 8660.0f, -8660.0f);
+	ImGui::SliderFloat("Translate (X)", &translation.x, 0.0f, -8660.0f);
 	ImGui::SliderFloat("Translate (Y)", &translation.y, 0.0f, static_cast<float>(height));
 	ImGui::End();
 

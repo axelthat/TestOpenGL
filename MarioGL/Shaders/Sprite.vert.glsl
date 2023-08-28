@@ -1,9 +1,6 @@
 #version 330 core
 
 layout(location = 0) in vec4 aPos;
-layout(location = 1) in vec2 aOffset;
-layout(location = 2) in vec2 uvTopLeft;
-layout(location = 3) in vec2 uvBottomRight;
 
 uniform mat4 u_Model;
 uniform mat4 u_View;
@@ -15,5 +12,5 @@ void main()
 {
     texCoords = aPos.zw;
 
-	gl_Position = u_Projection * u_View * u_Model * vec4(aPos.xy + aOffset, 1.0, 1.0);
+	gl_Position = u_Projection * u_View * u_Model * vec4(aPos.xy, 1.0, 1.0);
 };

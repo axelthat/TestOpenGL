@@ -48,7 +48,11 @@ void Level::onUpdate(float ts) {
 }
 
 void Level::onRender() {
+	Renderer2D::BeginBatch();
+
 	for (auto& gameOject : gameObjects) {
 		gameOject->onRender();
 	}
+
+	Renderer2D::EndBatch(Texture::GetTexture("Tileset"));
 }
