@@ -8,10 +8,18 @@
 
 class Renderer2D {
 private:
+	struct VertexData {
+		glm::vec2 position;
+		glm::vec2 texture;
+
+		VertexData(const glm::vec2 position, const glm::vec2 texture) : position(position), texture(texture) {};
+	};
+
+private:
 	static inline bool m_Batching = false;
 	static inline unsigned int m_DrawCall = 0;
 
-	static inline std::vector<float> m_VertexBatch;
+	static inline std::vector<VertexData> m_VertexBatch;
 	static inline std::vector<unsigned int> m_IndicesBatch;
 public:
 	static inline unsigned int& GetDrawCall() { return m_DrawCall; }

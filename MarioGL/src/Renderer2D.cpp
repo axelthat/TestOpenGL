@@ -15,6 +15,10 @@ struct RenderData {
 
 static RenderData r_Data;
 
+static inline const unsigned int MAX_QUADS = 1000;
+static inline const unsigned int MAX_VERTICES = MAX_QUADS * 16;
+static inline const unsigned int MAX_INDICES = MAX_QUADS * 6;
+
 void Renderer2D::onInit() {
 	r_Data.flatShader = &Shader::GetShader("Flat");
 	r_Data.spriteShader = &Shader::GetShader("Sprite");
@@ -31,22 +35,29 @@ void Renderer2D::onInit() {
 	//	2, 3, 0
 	//};
 
+	//m_VertexBatch.resize(MAX_VERTICES);
+	//m_IndicesBatch.resize(MAX_QUADS);
+
 	glGenVertexArrays(1, &r_Data.vao);
 	glBindVertexArray(r_Data.vao);
 
 	glGenBuffers(1, &r_Data.vbo);
 	glBindBuffer(GL_ARRAY_BUFFER, r_Data.vbo);
 	//glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(vertices[0]), vertices.data(), GL_STATIC_DRAW);
-	glBufferData(GL_ARRAY_BUFFER, 1000 * 4 * 4 * sizeof(float), nullptr, GL_DYNAMIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, MAX_QUADS * 4 * sizeof(VertexData), nullptr, GL_DYNAMIC_DRAW);
 
 	glGenBuffers(1, &r_Data.ibo);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, r_Data.ibo);
 	//glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(indices[0]), indices.data(), GL_STATIC_DRAW);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, 1000 * 6 * sizeof(unsigned int), nullptr, GL_DYNAMIC_DRAW);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, MAX_INDICES * sizeof(unsigned int), nullptr, GL_DYNAMIC_DRAW);
 
 	glEnableVertexAttribArray(0);
 	//glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(vertices[0]), 0);
-	glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(float), 0);
+	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(VertexData), (void*)offsetof(VertexData, position));
+
+	glEnableVertexAttribArray(1);
+	//glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(vertices[0]), 0);
+	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(VertexData), (void*)offsetof(VertexData, texture));
 }
 
 void Renderer2D::onDestroy() {
@@ -75,18 +86,11 @@ void Renderer2D::EndBatch(Texture& texture) {
 	//std::cout << m_VertexBatch.size() << ":" << m_IndicesBatch.size() << std::endl;
 
 	r_Data.spriteShader->Bind();
-
-	glm::mat4 transform = glm::translate(glm::mat4(1), glm::vec3(0.0f, 0.0f, 0.0f)) *
-		glm::rotate(glm::mat4(1), 0.0f, glm::vec3(0, 0, 1)) *
-		glm::scale(glm::mat4(1), { 50.0f, 50.0f, 0 });
-
-	r_Data.spriteShader->SetMatrix4("u_Model", transform);
-
 	texture.Bind();
 	glBindVertexArray(r_Data.vao);
 
 	glBindBuffer(GL_ARRAY_BUFFER, r_Data.vbo);
-	glBufferSubData(GL_ARRAY_BUFFER, 0, m_VertexBatch.size() * sizeof(float), m_VertexBatch.data());
+	glBufferSubData(GL_ARRAY_BUFFER, 0, m_VertexBatch.size() * sizeof(VertexData), m_VertexBatch.data());
 
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, r_Data.ibo);
 	glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, 0, m_IndicesBatch.size() * sizeof(unsigned int), m_IndicesBatch.data());
@@ -119,16 +123,13 @@ void Renderer2D::DrawQuad(glm::vec2 position, float rotation, glm::vec2 scale, g
 
 void Renderer2D::DrawTexture(glm::vec2 position, float rotation, glm::vec2 scale, Texture& texture, float u1, float v1, float u2, float v2) {
 	if (m_Batching) {
-		auto indexOffset = static_cast<unsigned int>(m_VertexBatch.size() / 4);
-
-		auto offsetX = position.x / 50.0f;
-		auto offsetY = position.y / 50.0f;
+		auto indexOffset = static_cast<unsigned int>(m_VertexBatch.size());
 
 		m_VertexBatch.insert(m_VertexBatch.end(), {
-			-0.5f + offsetX, -0.5f + offsetY, u1, v1,
-			 0.5f + offsetX, -0.5f + offsetY, u2, v1,
-			 0.5f + offsetX,  0.5f + offsetY, u2, v2,
-			-0.5f + offsetX,  0.5f + offsetY, u1, v2,
+			VertexData(glm::vec2(-0.5f * scale.x + position.x, -0.5f * scale.y + position.y), glm::vec2(u1, v1)),
+			VertexData(glm::vec2( 0.5f * scale.x + position.x, -0.5f * scale.y + position.y), glm::vec2(u2, v1)),
+			VertexData(glm::vec2( 0.5f * scale.x + position.x,  0.5f * scale.y + position.y), glm::vec2(u2, v2)),
+			VertexData(glm::vec2(-0.5f * scale.x + position.x,  0.5f * scale.y + position.y), glm::vec2(u1, v2)),
 		});
 
 		m_IndicesBatch.insert(m_IndicesBatch.end(), {
