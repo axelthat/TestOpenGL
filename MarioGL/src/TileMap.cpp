@@ -4,6 +4,8 @@ const std::unordered_map<std::string, TileMap::TileType> TileMap::Map = {
 	{"0", TileType::GROUND },
 	{"33", TileType::CADBURY},
 	{"24", TileType::MYSTERY_BOX},
+	{"25", TileType::MYSTERY_BOX_2},
+	{"26", TileType::MYSTERY_BOX_3},
 	{"1", TileType::WALL},
 	{ "272", TileType::DARK_GRASS_L },
 	{ "273", TileType::DARK_GRASS_M },
@@ -52,6 +54,12 @@ const std::optional<const glm::vec4> TileMap::GetUvCoordinates(const std::string
 		break;
 	case TileType::MYSTERY_BOX:
 		uv = glm::vec4(24.0f / 33.0f, 27.0f / 28.0f, 25.0f / 33.0f, 1.0f);
+		break;
+	case TileType::MYSTERY_BOX_2:
+		uv = glm::vec4(25.0f / 33.0f, 27.0f / 28.0f, 26.0f / 33.0f, 1.0f);
+		break;
+	case TileType::MYSTERY_BOX_3:
+		uv = glm::vec4(26.0f / 33.0f, 27.0f / 28.0f, 27.0f / 33.0f, 1.0f);
 		break;
 	case TileType::WALL:
 		uv = glm::vec4(1.0f / 33.0f, 27.0f / 28.0f, 2.0f / 33.0f, 1.0f);
@@ -122,4 +130,18 @@ const std::optional<const glm::vec4> TileMap::GetUvCoordinates(const std::string
 	}
 	
 	return uv;
+}
+
+const bool TileMap::IsSolid(const std::string& id) {
+	auto iter = Map.find(id);
+	if (iter == Map.end()) {
+		return false;
+	}
+
+	std::array<TileType, 10> solidBlocks = {
+		TileType::GROUND, TileType::CADBURY, TileType::MYSTERY_BOX, TileType::MYSTERY_BOX_2, TileType::MYSTERY_BOX_3,
+		TileType::WALL, TileType::PIPE_BL, TileType::PIPE_BR, TileType::PIPE_TL, TileType::PIPE_TR
+	};
+
+	return std::find(solidBlocks.begin(), solidBlocks.end(), iter->second) != solidBlocks.end();
 }

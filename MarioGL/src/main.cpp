@@ -8,6 +8,24 @@
 
 #include "Constants.h"
 #include "Game.h"
+#include "Input.h"
+
+void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
+{
+    if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
+        glfwSetWindowShouldClose(window, true);
+
+    if (key >= 0 && key < 1024 && action == GLFW_PRESS)
+    {
+        Input::keys[key] = true;
+    }
+
+    if (key >= 0 && key < 1024 && action == GLFW_RELEASE)
+    {
+        Input::keys[key] = false;
+        Input::keyUp[key] = false;
+    }
+}
 
 int main(void)
 {
@@ -30,7 +48,7 @@ int main(void)
         return -1;
     }
 
-    /* Make the window's context current */
+    glfwSetKeyCallback(window, key_callback);
     glfwMakeContextCurrent(window);
 
     int version = gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
@@ -52,7 +70,7 @@ int main(void)
     ImGui_ImplOpenGL3_Init();
 
     Game game = Game(K_GAME_WIDTH, K_GAME_HEIGHT);
-    game.onInit();
+    game.OnInit();
 
     float currentTime = 0.0f;
     float lastTime = 0.0f;
@@ -72,8 +90,8 @@ int main(void)
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
 
-        game.onUpdate(delta);
-        game.onRender();
+        game.OnUpdate(delta);
+        game.OnRender();
 
         ImGui::Render();
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());

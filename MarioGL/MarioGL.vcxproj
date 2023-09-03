@@ -148,8 +148,10 @@
     <ClCompile Include="src\Environment.cpp" />
     <ClCompile Include="src\Game.cpp" />
     <ClCompile Include="src\glad.c" />
+    <ClCompile Include="src\Input.cpp" />
     <ClCompile Include="src\Level.cpp" />
     <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\MysteryBlock.cpp" />
     <ClCompile Include="src\Renderer2D.cpp" />
     <ClCompile Include="src\Shader.cpp" />
     <ClCompile Include="src\Texture.cpp" />
@@ -170,8 +172,10 @@
     <ClInclude Include="src\Constants.h" />
     <ClInclude Include="src\Environment.h" />
     <ClInclude Include="src\Game.h" />
+    <ClInclude Include="src\Input.h" />
     <ClInclude Include="src\IObject.h" />
     <ClInclude Include="src\Level.h" />
+    <ClInclude Include="src\MysteryBlock.h" />
     <ClInclude Include="src\Renderer2D.h" />
     <ClInclude Include="src\Shader.h" />
     <ClInclude Include="src\Texture.h" />

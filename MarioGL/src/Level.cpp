@@ -6,8 +6,9 @@
 #include "Environment.h"
 #include "TileMap.h"
 #include "Renderer2D.h"
+#include "MysteryBlock.h"
 
-Level::Level(Game& game): game(game) {
+Level::Level(Game& game): IObject(false), game(game) {
 	std::string level;
 
 	try {
@@ -27,24 +28,36 @@ Level::Level(Game& game): game(game) {
 			auto uv = TileMap::GetUvCoordinates(cells[j]);
 
 			if (uv.has_value()) {
-				gameObjects.push_back(
-					std::make_unique<Environment>(
-						game,
-						uv.value(),
-						glm::vec2(x, y)
-					)
-				);
+				if (cells[j] == "24") {
+					gameObjects.push_back(
+						std::make_unique<MysteryBlock>(game, glm::vec2(x, y))
+					);
+				}
+				else {
+					gameObjects.push_back(
+						std::make_unique<Environment>(
+							game,
+							uv.value(),
+							glm::vec2(x, y),
+							TileMap::IsSolid(cells[j])
+						)
+					);
+				}
 			}
 		}
 	}
 
-	game.registerGameObject(*this);
+	game.RegisterGameObject(*this);
 }
 
 void Level::onUpdate(float ts) {
 	for (auto& gameOject : gameObjects) {
 		gameOject->onUpdate(ts);
 	}
+}
+
+void Level::onCollision(IObject* gameObject, glm::vec4 direction) {
+
 }
 
 void Level::onRender() {

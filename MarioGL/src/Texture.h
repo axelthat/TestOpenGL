@@ -27,4 +27,5 @@ public:
 	static Texture& GetTexture(const char* name);
 	void Generate(unsigned int width, unsigned int height, unsigned char* data);
 	void Bind(unsigned int slot = 0) const;
+	void UnBind() const;
 };

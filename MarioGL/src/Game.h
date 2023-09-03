@@ -29,11 +29,13 @@ public:
 	inline unsigned int& GetWidth() { return width; };
 
 public:
-	void onInit();
-	void onUpdate(float ts);
-	void onRender();
+	void OnInit();
+	void OnUpdate(float ts);
+	void OnRender();
 
-	void registerGameObject(IObject& gameObject);
+	void RegisterGameObject(IObject& gameObject);
+
+	void CheckCollisions();
 
 private:
 	void LoadShaders() const;

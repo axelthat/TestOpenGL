@@ -1,16 +1,20 @@
 #pragma once
 
 #include <unordered_map>
+#include <algorithm>
+#include <array>
 #include <string>
 #include <optional>
 #include <glm/glm.hpp>
 
 class TileMap {
 private:
-	static enum class TileType {
+	enum class TileType {
 		GROUND,
 		CADBURY,
 		MYSTERY_BOX,
+		MYSTERY_BOX_2,
+		MYSTERY_BOX_3,
 		WALL,
 		DARK_GRASS_L,
 		DARK_GRASS_R,
@@ -40,4 +44,5 @@ private:
 
 public:
 	static const std::optional<const glm::vec4> GetUvCoordinates(const std::string& id);
+	static const bool IsSolid(const std::string& id);
 };

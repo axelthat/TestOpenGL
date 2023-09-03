@@ -11,6 +11,7 @@ struct RenderData {
 	unsigned int ibo;
 	Shader* flatShader;
 	Shader* spriteShader;
+	Shader* singleShader;
 };
 
 static RenderData r_Data;
@@ -22,6 +23,7 @@ static inline const unsigned int MAX_INDICES = MAX_QUADS * 6;
 void Renderer2D::onInit() {
 	r_Data.flatShader = &Shader::GetShader("Flat");
 	r_Data.spriteShader = &Shader::GetShader("Sprite");
+	r_Data.singleShader = &Shader::GetShader("Single");
 
 	//const std::array<float, 16> vertices = {
 	//	-0.5f, -0.5f, 0.0f, 0.0f,
@@ -74,6 +76,10 @@ void Renderer2D::BeginScene(Camera& camera) {
 	r_Data.spriteShader->Bind();
 	r_Data.spriteShader->SetMatrix4("u_View", camera.GetView());
 	r_Data.spriteShader->SetMatrix4("u_Projection", camera.GetProjection());
+
+	r_Data.singleShader->Bind();
+	r_Data.singleShader->SetMatrix4("u_View", camera.GetView());
+	r_Data.singleShader->SetMatrix4("u_Projection", camera.GetProjection());
 }
 
 void Renderer2D::BeginBatch() {
@@ -141,13 +147,13 @@ void Renderer2D::DrawTexture(glm::vec2 position, float rotation, glm::vec2 scale
 	}
 
 
-	r_Data.spriteShader->Bind();
+	r_Data.singleShader->Bind();
 
 	glm::mat4 transform = glm::translate(glm::mat4(1), { position.x, position.y, 0 }) *
 		glm::rotate(glm::mat4(1), glm::radians(rotation), glm::vec3(0, 0, 1)) *
 		glm::scale(glm::mat4(1), { scale.x, scale.y, 0 });
 
-	r_Data.spriteShader->SetMatrix4("u_Model", transform);
+	r_Data.singleShader->SetMatrix4("u_Model", transform);
 
 	// Adjust the UV coordinates
 	float vertices[] = {

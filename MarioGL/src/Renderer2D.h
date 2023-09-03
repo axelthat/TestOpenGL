@@ -21,6 +21,9 @@ private:
 
 	static inline std::vector<VertexData> m_VertexBatch;
 	static inline std::vector<unsigned int> m_IndicesBatch;
+
+	static inline std::vector<VertexData> m_BoundingVertexBatch;
+	static inline std::vector<unsigned int> m_BoundingIndicesBatch;
 public:
 	static inline unsigned int& GetDrawCall() { return m_DrawCall; }
 	static inline void ResetDrawCall() { m_DrawCall = 0; }
